@@ -26,59 +26,444 @@ EXPORT_SYMBOL_GPL(power_supply_class);
 
 static struct device_type power_supply_dev_type;
 
+static bool __power_supply_is_supplied_by(struct power_supply *supplier,
+					 struct power_supply *supply)
+{
+	int i;
+
+	if (!supply->supplied_from && !supplier->supplied_to)
+		return false;
+
+	/* Support both supplied_to and supplied_from modes */
+	if (supply->supplied_from) {
+		if (!supplier->name)
+			return false;
+		for (i = 0; i < supply->num_supplies; i++)
+			if (!strcmp(supplier->name, supply->supplied_from[i]))
+				return true;
+	} else {
+		if (!supply->name)
+			return false;
+		for (i = 0; i < supplier->num_supplicants; i++)
+			if (!strcmp(supplier->supplied_to[i], supply->name))
+				return true;
+	}
+
+	return false;
+}
+
+/**
+ * power_supply_set_voltage_limit - set current limit
+ * @psy:	the power supply to control
+ * @limit:	current limit in uV from the power supply.
+ *		0 will disable the power supply.
+ *
+ * This function will set a maximum supply current from a source
+ * and it will disable the charger when limit is 0.
+ */
+int power_supply_set_voltage_limit(struct power_supply *psy, int limit)
+{
+	const union power_supply_propval ret = {limit,};
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_VOLTAGE_MAX,
+								&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL(power_supply_set_voltage_limit);
+
+
+/**
+ * power_supply_set_current_limit - set current limit
+ * @psy:	the power supply to control
+ * @limit:	current limit in uA from the power supply.
+ *		0 will disable the power supply.
+ *
+ * This function will set a maximum supply current from a source
+ * and it will disable the charger when limit is 0.
+ */
+int power_supply_set_current_limit(struct power_supply *psy, int limit)
+{
+	const union power_supply_propval ret = {limit,};
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_CURRENT_MAX,
+								&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_current_limit);
+
+/**
+ * power_supply_set_charging_enabled - enable or disable charging
+ * @psy:	the power supply to control
+ * @enable:	sets enable property of power supply
+ */
+int power_supply_set_charging_enabled(struct power_supply *psy, bool enable)
+{
+	const union power_supply_propval ret = {enable,};
+
+	if (psy->set_property)
+		return psy->set_property(psy,
+				POWER_SUPPLY_PROP_CHARGING_ENABLED,
+				&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_charging_enabled);
+
+/**
+ * power_supply_set_present - set present state of the power supply
+ * @psy:	the power supply to control
+ * @enable:	sets present property of power supply
+ */
+int power_supply_set_present(struct power_supply *psy, bool enable)
+{
+	const union power_supply_propval ret = {enable,};
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_PRESENT,
+								&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_present);
+
+/**
+ * power_supply_set_online - set online state of the power supply
+ * @psy:	the power supply to control
+ * @enable:	sets online property of power supply
+ */
+int power_supply_set_online(struct power_supply *psy, bool enable)
+{
+	const union power_supply_propval ret = {enable,};
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_ONLINE,
+								&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_online);
+
+
+/** power_supply_set_health_state - set health state of the power supply
+ * @psy:       the power supply to control
+ * @health:    sets health property of power supply
+ */
+int power_supply_set_health_state(struct power_supply *psy, int health)
+{
+	const union power_supply_propval ret = {health,};
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_HEALTH,
+		&ret);
+	return -ENXIO;
+}
+EXPORT_SYMBOL(power_supply_set_health_state);
+
+
+/**
+ * power_supply_set_scope - set scope of the power supply
+ * @psy:	the power supply to control
+ * @scope:	value to set the scope property to, should be from
+ *		the SCOPE enum in power_supply.h
+ */
+int power_supply_set_scope(struct power_supply *psy, int scope)
+{
+	const union power_supply_propval ret = {scope, };
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_SCOPE,
+								&ret);
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_scope);
+
+/**
+ * power_supply_set_usb_otg - set otg of the usb power supply
+ * @psy:	the usb power supply to control
+ * @scope:	value to set the otg property to
+ */
+int power_supply_set_usb_otg(struct power_supply *psy, int otg)
+{
+	const union power_supply_propval ret = {otg, };
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_USB_OTG,
+								&ret);
+	return -ENXIO;
+}
+EXPORT_SYMBOL(power_supply_set_usb_otg);
+
+/**
+ * power_supply_set_supply_type - set type of the power supply
+ * @psy:	the power supply to control
+ * @supply_type:	sets type property of power supply
+ */
+int power_supply_set_supply_type(struct power_supply *psy,
+				enum power_supply_type supply_type)
+{
+	const union power_supply_propval ret = {supply_type,};
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_TYPE,
+								&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_supply_type);
+
+/**
+ * power_supply_set_charge_type - set charge type of the power supply
+ * @psy:	the power supply to control
+ * @enable:	sets charge type property of power supply
+ */
+int power_supply_set_charge_type(struct power_supply *psy, int charge_type)
+{
+	const union power_supply_propval ret = {charge_type,};
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_CHARGE_TYPE,
+								&ret);
+
+	return -ENXIO;
+}
+EXPORT_SYMBOL_GPL(power_supply_set_charge_type);
+
+/**
+ * power_supply_set_hi_power_state - set power state for power_supply
+ * @psy:	the power supply to control
+ * @value:	value to be passed to the power_supply
+ *
+ */
+int power_supply_set_hi_power_state(struct power_supply *psy, int value)
+{
+	const union power_supply_propval ret = {value, };
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_HI_POWER,
+								&ret);
+	return -ENXIO;
+}
+EXPORT_SYMBOL(power_supply_set_hi_power_state);
+
+/**
+ * power_supply_set_low_power_state - set power state for power_supply
+ * @psy:	the power supply to control
+ * @value:	value to be passed to the power_supply
+ *
+ */
+int power_supply_set_low_power_state(struct power_supply *psy, int value)
+{
+	const union power_supply_propval ret = {value, };
+
+	if (psy->set_property)
+		return psy->set_property(psy, POWER_SUPPLY_PROP_LOW_POWER,
+								&ret);
+	return -ENXIO;
+}
+EXPORT_SYMBOL(power_supply_set_low_power_state);
+
 static int __power_supply_changed_work(struct device *dev, void *data)
 {
 	struct power_supply *psy = (struct power_supply *)data;
 	struct power_supply *pst = dev_get_drvdata(dev);
-	int i;
 
-	for (i = 0; i < psy->num_supplicants; i++)
-		if (!strcmp(psy->supplied_to[i], pst->name)) {
-			if (pst->external_power_changed)
-				pst->external_power_changed(pst);
-		}
+	if (__power_supply_is_supplied_by(psy, pst)) {
+		if (pst->external_power_changed)
+			pst->external_power_changed(pst);
+	}
+
 	return 0;
 }
 
 static void power_supply_changed_work(struct work_struct *work)
 {
+	unsigned long flags;
 	struct power_supply *psy = container_of(work, struct power_supply,
 						changed_work);
 
 	dev_dbg(psy->dev, "%s\n", __func__);
 
-	class_for_each_device(power_supply_class, NULL, psy,
-			      __power_supply_changed_work);
+	spin_lock_irqsave(&psy->changed_lock, flags);
+	if (psy->changed) {
+		psy->changed = false;
+		spin_unlock_irqrestore(&psy->changed_lock, flags);
 
-	power_supply_update_leds(psy);
+		class_for_each_device(power_supply_class, NULL, psy,
+				      __power_supply_changed_work);
 
-	kobject_uevent(&psy->dev->kobj, KOBJ_CHANGE);
+		power_supply_update_leds(psy);
+
+		kobject_uevent(&psy->dev->kobj, KOBJ_CHANGE);
+		spin_lock_irqsave(&psy->changed_lock, flags);
+	}
+	if (!psy->changed)
+		pm_relax(psy->dev);
+	spin_unlock_irqrestore(&psy->changed_lock, flags);
 }
 
 void power_supply_changed(struct power_supply *psy)
 {
+	unsigned long flags;
+
 	dev_dbg(psy->dev, "%s\n", __func__);
 
+	spin_lock_irqsave(&psy->changed_lock, flags);
+	psy->changed = true;
+	pm_stay_awake(psy->dev);
+	spin_unlock_irqrestore(&psy->changed_lock, flags);
 	schedule_work(&psy->changed_work);
 }
 EXPORT_SYMBOL_GPL(power_supply_changed);
+
+#ifdef CONFIG_OF
+#include <linux/of.h>
+
+static int __power_supply_populate_supplied_from(struct device *dev,
+						 void *data)
+{
+	struct power_supply *psy = (struct power_supply *)data;
+	struct power_supply *epsy = dev_get_drvdata(dev);
+	struct device_node *np;
+	int i = 0;
+
+	do {
+		np = of_parse_phandle(psy->of_node, "power-supplies", i++);
+		if (!np)
+			continue;
+
+		if (np == epsy->of_node) {
+			dev_info(psy->dev, "%s: Found supply : %s\n",
+				psy->name, epsy->name);
+			psy->supplied_from[i-1] = (char *)epsy->name;
+			psy->num_supplies++;
+			break;
+		}
+	} while (np);
+
+	return 0;
+}
+
+static int power_supply_populate_supplied_from(struct power_supply *psy)
+{
+	int error;
+
+	error = class_for_each_device(power_supply_class, NULL, psy,
+				      __power_supply_populate_supplied_from);
+
+	dev_dbg(psy->dev, "%s %d\n", __func__, error);
+
+	return error;
+}
+
+static int  __power_supply_find_supply_from_node(struct device *dev,
+						 void *data)
+{
+	struct device_node *np = (struct device_node *)data;
+	struct power_supply *epsy = dev_get_drvdata(dev);
+
+	/* return error breaks out of class_for_each_device loop */
+	if (epsy->of_node == np)
+		return -EINVAL;
+
+	return 0;
+}
+
+static int power_supply_find_supply_from_node(struct device_node *supply_node)
+{
+	int error;
+	struct device *dev;
+	struct class_dev_iter iter;
+
+	/*
+	 * Use iterator to see if any other device is registered.
+	 * This is required since class_for_each_device returns 0
+	 * if there are no devices registered.
+	 */
+	class_dev_iter_init(&iter, power_supply_class, NULL, NULL);
+	dev = class_dev_iter_next(&iter);
+
+	if (!dev)
+		return -EPROBE_DEFER;
+
+	/*
+	 * We have to treat the return value as inverted, because if
+	 * we return error on not found, then it won't continue looking.
+	 * So we trick it by returning error on success to stop looking
+	 * once the matching device is found.
+	 */
+	error = class_for_each_device(power_supply_class, NULL, supply_node,
+				       __power_supply_find_supply_from_node);
+
+	return error ? 0 : -EPROBE_DEFER;
+}
+
+static int power_supply_check_supplies(struct power_supply *psy)
+{
+	struct device_node *np;
+	int cnt = 0;
+
+	/* If there is already a list honor it */
+	if (psy->supplied_from && psy->num_supplies > 0)
+		return 0;
+
+	/* No device node found, nothing to do */
+	if (!psy->of_node)
+		return 0;
+
+	do {
+		int ret;
+
+		np = of_parse_phandle(psy->of_node, "power-supplies", cnt++);
+		if (!np)
+			continue;
+
+		ret = power_supply_find_supply_from_node(np);
+		if (ret) {
+			dev_dbg(psy->dev, "Failed to find supply, defer!\n");
+			return -EPROBE_DEFER;
+		}
+	} while (np);
+
+	/* All supplies found, allocate char ** array for filling */
+	psy->supplied_from = devm_kzalloc(psy->dev, sizeof(psy->supplied_from),
+					  GFP_KERNEL);
+	if (!psy->supplied_from) {
+		dev_err(psy->dev, "Couldn't allocate memory for supply list\n");
+		return -ENOMEM;
+	}
+
+	*psy->supplied_from = devm_kzalloc(psy->dev, sizeof(char *) * cnt,
+					   GFP_KERNEL);
+	if (!*psy->supplied_from) {
+		dev_err(psy->dev, "Couldn't allocate memory for supply list\n");
+		return -ENOMEM;
+	}
+
+	return power_supply_populate_supplied_from(psy);
+}
+#else
+static inline int power_supply_check_supplies(struct power_supply *psy)
+{
+	return 0;
+}
+#endif
 
 static int __power_supply_am_i_supplied(struct device *dev, void *data)
 {
 	union power_supply_propval ret = {0,};
 	struct power_supply *psy = (struct power_supply *)data;
 	struct power_supply *epsy = dev_get_drvdata(dev);
-	int i;
 
-	for (i = 0; i < epsy->num_supplicants; i++) {
-		if (!strcmp(epsy->supplied_to[i], psy->name)) {
-			if (epsy->get_property(epsy,
-				  POWER_SUPPLY_PROP_ONLINE, &ret))
-				continue;
+	if (__power_supply_is_supplied_by(epsy, psy))
+		if (!epsy->get_property(epsy, POWER_SUPPLY_PROP_ONLINE, &ret)) {
 			if (ret.intval)
 				return ret.intval;
 		}
-	}
+
 	return 0;
 }
 
@@ -141,7 +526,7 @@ int power_supply_set_battery_charged(struct power_supply *psy)
 }
 EXPORT_SYMBOL_GPL(power_supply_set_battery_charged);
 
-static int power_supply_match_device_by_name(struct device *dev, void *data)
+static int power_supply_match_device_by_name(struct device *dev, const void *data)
 {
 	const char *name = data;
 	struct power_supply *psy = dev_get_drvdata(dev);
@@ -149,7 +534,7 @@ static int power_supply_match_device_by_name(struct device *dev, void *data)
 	return strcmp(psy->name, name) == 0;
 }
 
-struct power_supply *power_supply_get_by_name(char *name)
+struct power_supply *power_supply_get_by_name(const char *name)
 {
 	struct device *dev = class_find_device(power_supply_class, NULL, name,
 					power_supply_match_device_by_name);
@@ -336,6 +721,12 @@ int power_supply_register(struct device *parent, struct power_supply *psy)
 
 	INIT_WORK(&psy->changed_work, power_supply_changed_work);
 
+	rc = power_supply_check_supplies(psy);
+	if (rc) {
+		dev_info(dev, "Not all required supplies found, defer probe\n");
+		goto check_supplies_failed;
+	}
+
 	rc = kobject_set_name(&dev->kobj, "%s", psy->name);
 	if (rc)
 		goto kobject_set_name_failed;
@@ -343,6 +734,11 @@ int power_supply_register(struct device *parent, struct power_supply *psy)
 	rc = device_add(dev);
 	if (rc)
 		goto device_add_failed;
+
+	spin_lock_init(&psy->changed_lock);
+	rc = device_init_wakeup(dev, true);
+	if (rc)
+		goto wakeup_init_failed;
 
 	rc = psy_register_thermal(psy);
 	if (rc)
@@ -365,9 +761,11 @@ create_triggers_failed:
 register_cooler_failed:
 	psy_unregister_thermal(psy);
 register_thermal_failed:
+wakeup_init_failed:
 	device_del(dev);
 kobject_set_name_failed:
 device_add_failed:
+check_supplies_failed:
 	put_device(dev);
 success:
 	return rc;

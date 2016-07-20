@@ -73,7 +73,7 @@
 #include <linux/pwm_backlight.h>
 
 #include <linux/w1-gpio.h>
-#define VELO_FAN_INT    EXYNOS4212_GPM3(0) /*IRQ XEINT8*/
+#define VELO_FAN_INT    EXYNOS4_GPX1(0) /*IRQ XEINT8*/
 
 
 extern void exynos4_setup_dwmci_cfg_gpio(struct platform_device *dev, int width);
@@ -336,21 +336,18 @@ static struct i2c_board_info clickarm4412_i2c_devs2[] __initdata = {
 	},
 };
 
-static struct i2c_board_info clickarm4412_i2c_devs3[] __initdata = {
+static struct i2c_board_info clickarm4412_i2c_devs4[] __initdata = {
 #if defined(CONFIG_DS2782)
 	{
 		I2C_BOARD_INFO("ds2782", 0x34),
 		.platform_data  = &ds278x_pdata,
 	},
 #endif
-#if defined(CONFIG_FAN54040)
 /**/
 	{
-		I2C_BOARD_INFO("fan54040", 0x6B),
-		.platform_data  = &tsc2007_info,
+		I2C_BOARD_INFO("fan5404x-charger", 0x6B),
 		.irq		= VELO_FAN_INT,/*xeint8 // GPM3CON0 CHAGE STATUS // GPM3CON1 DISABLE CHARGE*/
 	},
-#endif
 #if defined(CONFIG_SENSOR_MPU9250)
 	{
 	     I2C_BOARD_INFO("mpu9250", 0x68),
@@ -409,20 +406,6 @@ static struct pca953x_platform_data clickarm_gpio_expander_pdata = {
 	.gpio_base	= EXYNOS4_GPIO_END,
 };
 #endif
-
-static struct i2c_board_info clickarm4412_i2c_devs4[] __initdata = {
-#if defined(CONFIG_SENSORS_BH1780)
-	{
-		I2C_BOARD_INFO("bh1780", 0x29),
-	},
-#endif
-#if defined(CONFIG_GPIO_PCA953X)
-	{
-		I2C_BOARD_INFO("tca6416", 0x20),
-		.platform_data 	= &clickarm_gpio_expander_pdata,
-	},
-#endif
-};
 
 //#if defined(CONFIG_CLICKARM_OTHERS)
 //static struct gpio_led clickarm4412_gpio_config[] = {
@@ -521,14 +504,14 @@ static struct exynos_drm_fimd_pdata drm_fimd_pdata = {
 static void lcd_t55149gd030j_set_power(struct plat_lcd_data *pd,
 				   unsigned int power)
 {
-
+/* TODO: Manage backlight
 	if (power) {
 		gpio_set_value(EXYNOS4X12_GPM1(5),1);
 	} else {
 		gpio_set_value(EXYNOS4X12_GPM1(5),0);
 	}
 	gpio_free(EXYNOS4X12_GPM1(5));
-
+*/
 }
 
 static struct plat_lcd_data clickarm4412_lcd_t55149gd030j_data = {
@@ -756,13 +739,13 @@ static struct platform_device clickarm_fan = {
 
 static int lcd_power_on(struct lcd_device *ld, int enable)
 {	
-
+/* TODO: Manage backlight
 	if (enable) {
 		gpio_set_value(EXYNOS4X12_GPM1(5),1);
 	} else {
 		gpio_set_value(EXYNOS4X12_GPM1(5),0);
 	}
-
+*/
 	return 1;
 }
 
@@ -1121,20 +1104,12 @@ static void __init clickarm4412_machine_init(void)
 	i2c_register_board_info(2, clickarm4412_i2c_devs2,
 				ARRAY_SIZE(clickarm4412_i2c_devs2));
 
-	s3c_i2c3_set_platdata(NULL);
-	i2c_register_board_info(3, clickarm4412_i2c_devs3,
-				ARRAY_SIZE(clickarm4412_i2c_devs3));
-
 	s3c_i2c4_set_platdata(NULL);
 	i2c_register_board_info(4, clickarm4412_i2c_devs4,
 				ARRAY_SIZE(clickarm4412_i2c_devs4));
 	
 	gpio_set_value(EXYNOS4_GPJ1(4), 0);
 	gpio_set_value(EXYNOS4_GPJ0(6), 0);
-#if defined(CONFIG_CLICKARM_OTHERS)
-//	i2c_register_board_info(4, clickarm4412_i2c_devs4,
-//				ARRAY_SIZE(clickarm4412_i2c_devs4));
-#endif
 
 	s3c_i2c7_set_platdata(NULL);
 //	i2c_register_board_info(7, clickarm4412_i2c_devs7,

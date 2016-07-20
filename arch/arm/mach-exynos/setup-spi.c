@@ -28,12 +28,12 @@ int s3c64xx_spi0_cfg_gpio(void)
 int s3c64xx_spi1_cfg_gpio(void)
 {
 	printk("QUIEN 1!!!!!!\n\n\n\n");
-/*
+
 	s3c_gpio_cfgpin(EXYNOS4_GPB(4), S3C_GPIO_SFN(2));
 	s3c_gpio_setpull(EXYNOS4_GPB(4), S3C_GPIO_PULL_UP);
 	s3c_gpio_cfgall_range(EXYNOS4_GPB(6), 2,
 			      S3C_GPIO_SFN(2), S3C_GPIO_PULL_UP);
-*/
+
 	return 0;
 }
 #endif

@@ -574,6 +574,7 @@ static int max77686_pmic_probe(struct platform_device *pdev)
 	mdelay(1);
 	
 	regmap_update_bits(iodev->regmap, MAX77686_REG_32KHZ, 0x06, 0x06);
+	
 	return 0;
 err:
 	while (--i >= 0)

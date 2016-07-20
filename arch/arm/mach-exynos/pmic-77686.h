@@ -1,6 +1,8 @@
 /* linux/arch/arm/mach-s5pv310/dev-pmic.c
  *
  * MAX77686 PMIC platform data.
+ *
+ * Modifyed for Clickarm Base Standart
 */
 
 #include <linux/kernel.h>
@@ -11,7 +13,7 @@
 #include <mach/gpio.h>
 
 //-----------------------------------------------------------------------------------
-// BUCK1 : VDD_MIF(1.0V)
+// BUCK1 : VDD_MIF(1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply buck1_consumer_77686 =
 	REGULATOR_SUPPLY("vdd_mif", NULL);
@@ -36,7 +38,7 @@ static struct regulator_init_data max77686_buck1_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// BUCK2 : VDD_ARM(1.2V)
+// BUCK2 : VDD_ARM(1.2V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply buck2_consumer_77686 =
 	REGULATOR_SUPPLY("vdd_arm", NULL);
@@ -55,7 +57,7 @@ static struct regulator_init_data max77686_buck2_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// BUCK3 : VDD_INT(1.0V)
+// BUCK3 : VDD_INT(1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply buck3_consumer_77686 =
 	REGULATOR_SUPPLY("vdd_int", NULL);
@@ -78,7 +80,7 @@ static struct regulator_init_data max77686_buck3_data = {
 	.consumer_supplies	= &buck3_consumer_77686,
 };
 //-----------------------------------------------------------------------------------
-// BUCK4 : VDD_G3D(1.0V)
+// BUCK4 : VDD_G3D(1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply buck4_consumer = 
 	REGULATOR_SUPPLY("vdd_g3d", NULL);
@@ -100,7 +102,7 @@ static struct regulator_init_data max77686_buck4_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// BUCK5 : VDDQ_CKEM1_2,VDDQ_E1,VDDQ_E2,VDDCA_E1,VDDCA_E2(1.2V)
+// BUCK5 : VDDQ_CKEM1_2,VDDQ_E1,VDDQ_E2,VDDCA_E1,VDDCA_E2(1.2V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_buck5_data = {
 	.constraints	= {
@@ -119,7 +121,7 @@ static struct regulator_init_data max77686_buck5_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// BUCK6 : Input to LDO1,6,7,8,15(1.35V)
+// BUCK6 : Input to LDO1,6,7,8,15(1.35V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_buck6_data = {
 	.constraints	= {
@@ -138,7 +140,7 @@ static struct regulator_init_data max77686_buck6_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// BUCK7 : Input to LDO 3,5,9,11,17,18,19,20(2.0V)
+// BUCK7 : Input to LDO 3,5,9,11,17,18,19,20(2.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_buck7_data = {
 	.constraints	= {
@@ -157,48 +159,51 @@ static struct regulator_init_data max77686_buck7_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// BUCK8 : BUCK8 POWER (3V3)
+// BUCK8 : BUCK 8 3V3 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
+
 static struct regulator_consumer_supply buck8_consumer =
 	REGULATOR_SUPPLY("vmmc", "dw_mmc");
 static struct regulator_init_data max77686_buck8_data = {
 	.constraints	= {
-		.name		= "BUCK8 3V3",
+		.name		= "BUCK 8 3V3",
 		.min_uV		= 3300000,
 		.max_uV		= 3300000,
-		.always_on	= 1,
-		.boot_on	= 1,
+		.always_on	= 0,
+		.boot_on	= 0,
 		.apply_uV	= 1,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
-			.uV	= 3300000,
-			.mode	= REGULATOR_MODE_NORMAL,
-			.enabled = 1,
+			.enabled = 0,
+			.disabled = 0,
 		},
 	},
+	.num_consumer_supplies  = 1,
+	.consumer_supplies  = &buck8_consumer,
 };
 
 //-----------------------------------------------------------------------------------
-// BUCK9 : BUCK 9 POWER (3V3)
+// BUCK9 : BUCK 9 3V3 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_buck9_data = {
 	.constraints	= {
 		.name		= "BUCK9 3V3",
 		.min_uV		= 3300000,
 		.max_uV		= 3300000,
-		.always_on	= 1,
-		.boot_on	= 1,
+		.always_on	= 0,
+		.boot_on	= 0,
 		.apply_uV	= 1,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
 			.uV	= 3300000,
 			.mode	= REGULATOR_MODE_NORMAL,
-			.enabled = 1,
+			.enabled = 0,
 		},
 	},
 };
+
 //-----------------------------------------------------------------------------------
-// LDO1 : VDD_ALIVE(1.0V)
+// LDO1 : VDD_ALIVE(1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo1_consumer_77686 =
 	REGULATOR_SUPPLY("vdd_alive", NULL);
@@ -221,7 +226,7 @@ static struct regulator_init_data max77686_ldo1_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO2 : VDDQ_M1,VDDQ_M2 (1.8V)
+// LDO2 : VDDQ_M1,VDDQ_M2 (1.8V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_ldo2_data = {
 	.constraints	= {
@@ -239,14 +244,14 @@ static struct regulator_init_data max77686_ldo2_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO3 : VDDQ_SBUS,VDDQ_SYS02,VDDQ_AUD,VDDQ_EXT....(1.8V)
+// LDO3 : LDO 3 1V8 NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo3_consumer_77686 =
 	REGULATOR_SUPPLY("vddq_aud", NULL);
 
 static struct regulator_init_data max77686_ldo3_data = {
 	.constraints	= {
-		.name		= "LDO3 VDDQ_AUD_1V8",
+		.name		= "LDO3 1V8",
 		.min_uV		= 1800000,
 		.max_uV		= 1800000,
 		.apply_uV	= 1,
@@ -262,16 +267,16 @@ static struct regulator_init_data max77686_ldo3_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO4 : VDDQ_MMC2 (2.8V)
+// LDO4 : LDO 4 (2.8V) VELO LCD_VCI
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo4_consumer_77686 =
 	REGULATOR_SUPPLY("vddq_mmc2", NULL);
 
 static struct regulator_init_data max77686_ldo4_data = {
 	.constraints	= {
-		.name		= "LDO4 VDDQ_MMC2_2V8",
+		.name		= "LCD_VCI",
 		.min_uV		= 2800000,
-		.max_uV		= 2800000,
+		.max_uV		= 3300000,
 		.apply_uV	= 1,
 		.always_on	= 1,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
@@ -285,14 +290,14 @@ static struct regulator_init_data max77686_ldo4_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO5 : VDDQ_MMC3,VDDQ_MMC01 (1.8V)
+// LDO5 : LDO 5 (1.8V) AUDIO_1V8
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo5_consumer_77686 =
 	REGULATOR_SUPPLY("vddq_mmc1", NULL);
 
 static struct regulator_init_data max77686_ldo5_data = {
 	.constraints	= {
-		.name		= "LDO5 VDDQ_MMC1_1V8",
+		.name		= "AUDIO_1V8",
 		.min_uV		= 1800000,
 		.max_uV		= 1800000,
 		.apply_uV	= 1,
@@ -308,7 +313,7 @@ static struct regulator_init_data max77686_ldo5_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO6 : VDD10_MPLL (1.0V)
+// LDO6 : VDD10_MPLL (1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_ldo6_data = {
 	.constraints	= {
@@ -326,7 +331,7 @@ static struct regulator_init_data max77686_ldo6_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO7 : VDD10_A/E/VPLL (1.0V)
+// LDO7 : VDD10_A/E/VPLL (1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_ldo7_data = {
 	.constraints	= {
@@ -344,7 +349,7 @@ static struct regulator_init_data max77686_ldo7_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO8 : VDD10_HDMI,VDD10_MIPI (1.0V)
+// LDO8 : VDD10_HDMI,VDD10_MIPI (1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo8_consumer_77686[] = {
 	REGULATOR_SUPPLY("vdd", "exynos4-hdmi"),
@@ -370,25 +375,26 @@ static struct regulator_init_data max77686_ldo8_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO9 : I2C SENSORS POWER ON VELO (1.8V)
+// LDO9 : LDO 9 1V8 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_ldo9_data = {
 	.constraints	= {
-		.name		= "LDO9 VT_CORE_1V0",
+		.name		= "SENS_1V8",
 		.min_uV		= 1800000,
 		.max_uV		= 1800000,
+		.boot_on	= 1,
 		.apply_uV	= 1,
 		.always_on	= 1,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
-			.uV		= 1000000,
+			.uV		= 1800000,
 			.enabled = 1,
 		},
 	},
 };
 
 //-----------------------------------------------------------------------------------
-// LDO10 : VDD10_HDMI,VDD10_MIPI (1.8V)
+// LDO10 : VDD10 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo10_consumer_77686[] = {
 	REGULATOR_SUPPLY("vdd_osc", "exynos4-hdmi"),
@@ -400,14 +406,14 @@ static struct regulator_init_data max77686_ldo10_data = {
 	.constraints	= {
 		.name		= "LDO10 VDD18_MIPI_1V8",
 		.min_uV		= 1800000,
-		.max_uV		= 1800000,
-		.boot_on	= 1,
-		.always_on	= 1,
+		.max_uV		= 3300000,
+		.boot_on	= 0,
+		.always_on	= 0,
 		.apply_uV	= 1,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
 			.uV		= 1800000,
-			.enabled = 1,
+			.enabled = 0,
 		},
 	},
 	.num_consumer_supplies  = ARRAY_SIZE(ldo10_consumer_77686),
@@ -415,25 +421,25 @@ static struct regulator_init_data max77686_ldo10_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO11 : VDD18_ABB1 (1.8V)
+// LDO11 : VDD18 1V8 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data __initdata max77686_ldo11_data = {
 	.constraints	= {
 		.name		= "LDO11 VDD18_ABB1_1V8",
 		.min_uV		= 1800000,
-		.max_uV		= 1800000,
-		.apply_uV	= 1,
-		.always_on	= 1,
+		.max_uV		= 3300000,
+		.apply_uV	= 0,
+		.always_on	= 0,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
 			.uV		= 1800000,
-			.enabled	= 1,
+			.enabled	= 0,
 		},
 	},
 };
 
 //-----------------------------------------------------------------------------------
-// LDO12 : VDD33_UOTG (3.3V)
+// LDO12 : LDO 12 3V3 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo12_consumer_77686 =
 REGULATOR_SUPPLY("vusb_a", NULL);
@@ -441,30 +447,29 @@ REGULATOR_SUPPLY("vusb_a", NULL);
 static struct regulator_init_data max77686_ldo12_data = {
 	.constraints = {
 		.name		= "vdd_ldo12 range",
-		.min_uV		= 3300000,
+		.min_uV		= 3000000,
 		.max_uV		= 3300000,
-		.boot_on	= 1,
+		.boot_on	= 0,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
-		.always_on	= 1,
+		.always_on	= 0,
 		.state_mem	= {
-			.disabled	= 1,
-			.mode		= REGULATOR_MODE_STANDBY,
+			.disabled	= 0,
+			.mode		= REGULATOR_MODE_NORMAL,
 		},
-		.initial_state = PM_SUSPEND_MEM, 
 	},
 	.num_consumer_supplies	= 1,
 	.consumer_supplies  = &ldo12_consumer_77686,
 };
 
 //-----------------------------------------------------------------------------------
-// LDO13 : VDD18_MIPIHSI (1.8V)
+// LDO13 : LDO 13 EMMC_VDD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo13_consumer_77686 =
 	REGULATOR_SUPPLY("vdd18_mipihsi", NULL);
 
 static struct regulator_init_data max77686_ldo13_data = {
 	.constraints	= {
-		.name		= "LDO13 VDD18_MIPIHSI_1V8",
+		.name		= "EMMC_VDD",
 		.min_uV		= 1800000,
 		.max_uV		= 1800000,
 		.apply_uV	= 1,
@@ -480,22 +485,22 @@ static struct regulator_init_data max77686_ldo13_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO14 : VDD18_TS/ADC (1.8V)
+// LDO14 : LDO 14 1V8 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo14_consumer_77686 =
 	REGULATOR_SUPPLY("vdd18_adc", NULL);
 
 static struct regulator_init_data max77686_ldo14_data = {
 	.constraints	= {
-		.name		= "LDO14 VDD18_ADC_1V8",
+		.name		= "LDO14 1V8",
 		.min_uV		= 1800000,
-		.max_uV		= 1800000,
-		.apply_uV	= 1,
-		.always_on	= 1,
+		.max_uV		= 3300000,
+		.apply_uV	= 0,
+		.always_on	= 0,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
 			.uV		= 1800000,
-			.enabled	= 1,
+			.enabled	= 0,
 		},
 	},
 	.num_consumer_supplies	= 1,
@@ -503,7 +508,7 @@ static struct regulator_init_data max77686_ldo14_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO15 : VDD10_OTG/HSIC (1.0V)
+// LDO15 : VDD10_OTG/HSIC (1.0V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo15_consumer_77686 =
 	REGULATOR_SUPPLY("vusb_d", NULL);
@@ -527,40 +532,40 @@ static struct regulator_init_data max77686_ldo15_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO16 : VDD18_HSIC (1.8V)
+// LDO16 : VDD18_HSIC (1.8V) DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_ldo16_data = {
 	.constraints	= {
 		.name		= "LDO16 VDD18_HSIC",
 		.min_uV		= 1800000,
-		.max_uV		= 1800000,
-		.apply_uV	= 1,
-		.always_on	= 1,
+		.max_uV		= 3300000,
+		.apply_uV	= 0,
+		.always_on	= 0,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
 			.uV		= 1800000,
-			.enabled = 1,
+			.enabled = 0,
 		},
 	},
 };
 
 //-----------------------------------------------------------------------------------
-// LDO17 : VDDQ_CAM (1.8V)
+// LDO17 : VLDO 17 1V2 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo17_consumer_77686 =
 	REGULATOR_SUPPLY("vddq_cam", NULL);
 
 static struct regulator_init_data max77686_ldo17_data = {
 	.constraints	= {
-		.name		= "LDO17 VDDQ_CAM_1V8",
-		.min_uV		= 1800000,
-		.max_uV		= 1800000,
+		.name		= "LDO17 1V2",
+		.min_uV		= 1200000,
+		.max_uV		= 3300000,
 		.apply_uV	= 1,
-		.always_on	= 1,
+		.always_on	= 0,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
-			.uV		= 1800000,
-			.enabled = 1,
+			.uV		= 1200000,
+			.enabled = 0,
 		},
 	},
 	.num_consumer_supplies  = 1,
@@ -568,7 +573,7 @@ static struct regulator_init_data max77686_ldo17_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO18 : VDDQ_ISP (1.8V)
+// LDO18 : VDDQ_ISP (1.8V) NOMOD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo18_consumer_77686 =
 	REGULATOR_SUPPLY("vddq_isp", NULL);
@@ -595,19 +600,18 @@ static struct regulator_init_data max77686_ldo18_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO19 : VT_CAM (1.8V)
+// LDO19 : LDO 19 1V8 GPS_VDD
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo19_consumer_77686 =
 	REGULATOR_SUPPLY("vt_cam", NULL);
 
 static struct regulator_init_data max77686_ldo19_data = {
 	.constraints	= {
-		.name		= "LDO19 VT_CAM_1V8",
+		.name		= "GPS_VDD",
 		.min_uV		= 1800000,
 		.max_uV		= 1800000,
 		.apply_uV	= 1,
 		.always_on	= 1,
-		.boot_on	= 1,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
 			.uV		= 1800000,
@@ -619,116 +623,83 @@ static struct regulator_init_data max77686_ldo19_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO20 : EMMC_IO_1_8
+// LDO20 : LDO 20 1V8 SENS_1V8
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo20_consumer_77686 =
 	REGULATOR_SUPPLY("vqmmc", "dw_mmc");
 
 static struct regulator_init_data max77686_ldo20_data = {
 	.constraints	= {
-		.name		= "vddq_emmc_1V8",
+		.name		= "LDO20",
 		.min_uV		= 1800000,
-		.max_uV		= 3000000,
-		.always_on	= 1,
-		.boot_on	= 1,
-		.apply_uV	= 1,
+		.max_uV		= 1800000,
+		.always_on	= 0,
+		.boot_on	= 0,
+		.apply_uV	= 0,
 		.valid_ops_mask = REGULATOR_CHANGE_VOLTAGE |
 				  REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
-			.enabled = 1,
-			.disabled = 1,
+				.uV = 1800000,
+			.enabled = 0,
 		},
 	},
 	.num_consumer_supplies  = 1,
 	.consumer_supplies  = &ldo20_consumer_77686,
 };
 //-----------------------------------------------------------------------------------
-// LDO21 : TFLASH (2.8V)
+// LDO21 : LDO 21 2V8 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_init_data max77686_ldo21_data = {
 	.constraints	= {
 		.name		= "LDO21 TFLASH_2V8",
 		.min_uV		= 2800000,
-		.max_uV		= 2800000,
-		.apply_uV	= 1,
-		.always_on	= 1,
+		.max_uV		= 3300000,
+		.apply_uV	= 0,
+		.always_on	= 0,
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
 			.uV		= 2800000,
-			.enabled = 1,
+			.enabled = 0,
 		},
 	},
 };
 
 //-----------------------------------------------------------------------------------
-// LDO22 : Not used
+// LDO22 : OUT22
 //-----------------------------------------------------------------------------------
-#if defined(CONFIG_ODROID_U)||defined(CONFIG_ODROID_U2)
-static struct regulator_consumer_supply ldo22_consumer_77686 =
-	REGULATOR_SUPPLY("vmmc", "dw_mmc");
-static struct regulator_init_data max77686_ldo22_data = {
-	.constraints	= {
-		.name		= "vddf_emmc_2V85",
-		.min_uV		= 2850000,
-		.max_uV		= 2850000,
-		.apply_uV	= 1,
-		.always_on	= 1,
-		.boot_on	= 1,
-		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
-		.state_mem	= {
-            .enabled = 1,
-			.disabled = 0,
-		},
-	},
-	.num_consumer_supplies  = 1,
-	.consumer_supplies  = &ldo22_consumer_77686,
-};
-#else
+
 	static struct regulator_init_data max77686_ldo22_data = {
 		.constraints	= {
-			.name		= "LDO22 2V8",
+			.name		= "OUT22",
 			.min_uV		= 2800000,
 			.max_uV		= 2800000,
-			.apply_uV	= 0,
-			.always_on	= 0,
-			.boot_on	= 0,
+			.apply_uV	= 1,
+			.always_on	= 1,
+			.boot_on	= 1,
 			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 			.state_mem	= {
 				.uV		= 2800000,
-				.enabled = 0,
+				.enabled = 1,
 			},
 		},
 	};
-#endif
+
 //-----------------------------------------------------------------------------------
-// LDO23 : TOUCH (2.8V)
+// LDO23 : LDO 23 3V0 AUDIO_3V0
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo23_consumer_77686 =
 	REGULATOR_SUPPLY("vdd_touch", NULL);
 
 static struct regulator_init_data max77686_ldo23_data = {
 	.constraints	= {
-		.name		= "LDO23 VDD_TOUCH_2V8",
-#if defined(CONFIG_FB_S5P_S6E8AA1) || defined(CONFIG_FB_S5P_LG4591)
-		.min_uV		= 3300000,
-		.max_uV		= 3300000,
-#else
+		.name		= "AUDIO_3V0",
 		.min_uV		= 3000000,
-		.max_uV		= 3000000,
-#endif		
+		.max_uV		= 3300000,
 		.apply_uV	= 1,
-#if defined(CONFIG_ODROID_U)||defined(CONFIG_ODROID_U2)
-        .always_on  = 0,
-#else
 		.always_on	= 1,
-#endif
 		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
 		.state_mem	= {
-#if defined(CONFIG_FB_S5P_S6E8AA1) || defined(CONFIG_FB_S5P_LG4591)
-			.uV		= 3300000,
-#else
 			.uV		= 3000000,
-#endif			
 			.enabled = 1,
 		},
 	},
@@ -737,101 +708,70 @@ static struct regulator_init_data max77686_ldo23_data = {
 };
 
 //-----------------------------------------------------------------------------------
-// LDO24 : TOUCHLED (3.3V)
+// LDO24 : LDO 24 3V0 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo24_consumer_77686 =
 	REGULATOR_SUPPLY("vdd_touchled", NULL);
 
 static struct regulator_init_data max77686_ldo24_data = {
 	.constraints	= {
-		.name		= "LDO24 VDD_TOUCHLED_3V3",
-#if defined(CONFIG_FB_S5P_S6E8AA1)
-		.min_uV		= 2200000,
-		.max_uV		= 2200000,
-#elif defined(CONFIG_FB_S5P_S6EVR01)
-		.min_uV		= 3000000,
-		.max_uV		= 3000000,
-#else
-		.min_uV		= 3000000,
-		.max_uV		= 3000000,
-#endif		
-		.apply_uV	= 1,
-#if defined(CONFIG_ODROID_U)||defined(CONFIG_ODROID_U2)
-        .always_on  = 0,
-#else
-		.always_on	= 1,
-#endif		
-		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
-		.state_mem	= {
-#if defined(CONFIG_FB_S5P_S6E8AA1)
-			.uV		= 2200000,
-#elif defined(CONFIG_FB_S5P_S6EVR01)
-			.uV		= 3000000,
-#else
-			.uV		= 3000000,
-#endif			
-			.enabled = 1,
+			.name		= "LDO24 3V0",
+			.min_uV		= 3000000,
+			.max_uV		= 3300000,
+			.apply_uV	= 1,
+			.always_on	= 0,
+			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+			.state_mem	= {
+				.uV		= 3000000,
+				.enabled = 0,
+			},
 		},
-	},
 	.num_consumer_supplies  = 1,
 	.consumer_supplies  = &ldo24_consumer_77686,
 };
 
 //-----------------------------------------------------------------------------------
-// LDO25 : VDDQ_LCD (3.0V)
+// LDO25 : LDO 25 3V0 DISABLED ON VELO
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo25_consumer_77686 =
 	REGULATOR_SUPPLY("vddq_lcd", NULL);
 
 static struct regulator_init_data max77686_ldo25_data = {
 	.constraints	= {
-		.name		= "LDO25 VDDQ_LCD_3V0",
-#if defined(CONFIG_FB_S5P_S6E8AA1)
-		.min_uV		= 3100000,
-		.max_uV		= 3100000,
-#else
-		.min_uV		= 3000000,
-		.max_uV		= 3000000,
-#endif		
-		.apply_uV	= 1,
-		.always_on	= 1,
-		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
-		.state_mem	= {
-#if defined(CONFIG_FB_S5P_S6E8AA1)
-			.uV		= 3100000,
-#else
-			.uV		= 3000000,
-#endif
-			.enabled = 1,
+			.name		= "LDO25 3V0",
+			.min_uV		= 3000000,
+			.max_uV		= 3300000,
+			.apply_uV	= 1,
+			.always_on	= 0,
+			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+			.state_mem	= {
+				.uV		= 3000000,
+				.enabled = 0,
+			},
 		},
-	},
 	.num_consumer_supplies  = 1,
 	.consumer_supplies  = &ldo25_consumer_77686,
 };
 
 //-----------------------------------------------------------------------------------
-// LDO26 : VDD_MOTOR (3.0V)
+// LDO26 : LDO 26 3V0 3V_HIG
 //-----------------------------------------------------------------------------------
 static struct regulator_consumer_supply ldo26_consumer_77686 =
 	REGULATOR_SUPPLY("vdd_motor", NULL);
 
 static struct regulator_init_data max77686_ldo26_data = {
 	.constraints	= {
-		.name		= "LDO26 VDD_MOTOR_3V0",
-		.min_uV		= 3000000,
-		.max_uV		= 3000000,
-		.apply_uV	= 1,
-#if defined(CONFIG_ODROID_U)||defined(CONFIG_ODROID_U2)
-        .always_on  = 0,
-#else
-		.always_on	= 1,
-#endif		
-		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
-		.state_mem	= {
-			.uV		= 3000000,
-			.enabled = 1,
+			.name		= "3V_HIG",
+			.min_uV		= 3000000,
+			.max_uV		= 3300000,
+			.apply_uV	= 1,
+			.always_on	= 1,
+			.valid_ops_mask = REGULATOR_CHANGE_STATUS,
+			.state_mem	= {
+				.uV		= 3000000,
+				.enabled = 1,
+			},
 		},
-	},
 	.num_consumer_supplies  = 1,
 	.consumer_supplies  = &ldo26_consumer_77686,
 };
