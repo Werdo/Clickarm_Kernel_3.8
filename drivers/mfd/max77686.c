@@ -80,7 +80,6 @@ static int max77686_i2c_probe(struct i2c_client *i2c,
 	unsigned int data;
 	int ret = 0;
 
-	printk("max77686_i2c_probe\n");
 	if (i2c->dev.of_node)
 		pdata = max77686_i2c_parse_dt_pdata(&i2c->dev);
 
